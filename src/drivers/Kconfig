@@ -1,0 +1,2 @@
+rsource "bq769x2/Kconfig"
+rsource "lis2dw12/Kconfig"

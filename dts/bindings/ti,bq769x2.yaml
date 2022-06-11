@@ -1,0 +1,12 @@
+#
+# Copyright (c) 2020 Linumiz
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+description: Texas Instruments BQ769x2 Monitor
+
+compatible: "ti,bq769x2"
+
+include: i2c-device.yaml
+

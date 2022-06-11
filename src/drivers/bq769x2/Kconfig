@@ -1,0 +1,25 @@
+# Copyright (c) 2020 Linumiz
+#
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig BQ769x2
+	bool "BQ769x2 Monitor"
+	depends on I2C
+	help
+	  Enable I2C-based driver for BQ769x2 Monitor.
+
+if BQ769x2
+
+config BQ769x2_I2C_CRC_MODE
+	bool "Configure i2c crc mode"
+	default n
+
+config BQ769x2_CONNECTING_CELLS
+	int "Number of cells"
+	default 16
+
+config BQ769x2_MAXBUF_SIZE
+	int "size of send buffer"
+	default 10
+
+endif # BQ769x2

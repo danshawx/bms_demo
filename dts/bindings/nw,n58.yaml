@@ -1,0 +1,10 @@
+description: Neoway N58 CAT1
+
+compatible: "nw,n58"
+
+include: uart-device.yaml
+
+properties:
+    cat1-pwr:
+    type: phandle-array
+    required: true

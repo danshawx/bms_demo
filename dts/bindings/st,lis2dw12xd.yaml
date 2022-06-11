@@ -1,0 +1,5 @@
+description: Texas Instruments lis2dw12xd Monitor
+
+compatible: "st,lis2dw12xd"
+
+include: i2c-device.yaml

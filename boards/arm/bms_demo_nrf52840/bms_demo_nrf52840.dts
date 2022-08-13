@@ -166,9 +166,9 @@
 // };
 
 &uart1 {
-	status = "disabled";
+	status = "okay";
 	label = "UART_1";
-	current-speed = <115200>;
+	current-speed = <921600>;
 	rx-pin = <44>;
 	tx-pin = <45>;
 	// rx-pin = <13>;

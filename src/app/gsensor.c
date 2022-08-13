@@ -16,53 +16,97 @@
 LOG_MODULE_REGISTER(gsensor);
 
 
-static const struct device *lis2dw12;
+static const struct device *lis2dw12 = NULL;
 
-static void fetch_and_display(void)
+int gsensor_set_attr(enum sensor_channel chan, enum sensor_attribute attr, uint32_t value)
 {
-	static unsigned int count;
-	struct sensor_value accel[3];
-	// struct sensor_value temperature;
-	const char *overrun = "";
-	int rc = sensor_sample_fetch(lis2dw12);
+	struct sensor_value val = {0};
 
-	++count;
-	if (rc == -EBADMSG) {
-		/* Sample overrun.  Ignore in polled mode. */
-		if (IS_ENABLED(CONFIG_LIS2DW12XD_TRIGGER)) {
-			overrun = "[OVERRUN] ";
-		}
-		rc = 0;
+	if (NULL == lis2dw12)
+	{
+		return -EFAULT;
 	}
-	if (rc == 0) {
-		rc = sensor_channel_get(lis2dw12,
-					SENSOR_CHAN_ACCEL_XYZ,
-					accel);
-	}
-	if (rc < 0) {
-		LOG_ERR("ERROR: Update failed: %d\n", rc);
-	} else {
-		LOG_DBG("#%u @ %u ms: %sx %f , y %f , z %f",
-		       count, k_uptime_get_32(), overrun,
-		       sensor_value_to_double(&accel[0]),
-		       sensor_value_to_double(&accel[1]),
-		       sensor_value_to_double(&accel[2]));
-	}
+	LOG_DBG("chan is %d, attr is %d, value is %d", chan, attr, value);
+	val.val1 = value;
 
-	// if (IS_ENABLED(CONFIG_LIS2DH_MEASURE_TEMPERATURE)) {
-	// 	if (rc == 0) {
-	// 		rc = sensor_channel_get(sensor, SENSOR_CHAN_DIE_TEMP, &temperature);
-	// 		if (rc < 0) {
-	// 			printf("\nERROR: Unable to read temperature:%d\n", rc);
-	// 		} else {
-	// 			printf(", t %f\n", sensor_value_to_double(&temperature));
-	// 		}
-	// 	}
-
-	// } else {
-	// 	printf("\n");
-	// }
+	return sensor_attr_set(lis2dw12, chan, attr, &val);
 }
+
+int gsensor_get_attr(enum sensor_channel chan, enum sensor_attribute attr, void *value)
+{
+	if (NULL == lis2dw12)
+	{
+		return -EFAULT;
+	}
+	LOG_DBG("chan is %d, attr is %d", chan, attr);
+	return sensor_attr_get(lis2dw12, chan, attr, (struct sensor_value *)value);
+}
+
+int gsensor_chanl_get(struct sensor_axis_val *value)
+{
+	struct sensor_value accel1[3];
+	int status = -1;
+
+	if ((NULL == lis2dw12) || (NULL == value))
+	{
+		return -EFAULT;
+	}
+
+	status = sensor_channel_get(lis2dw12, SENSOR_CHAN_ACCEL_XYZ, accel1);
+	if (status == 0)
+	{
+		value->x = accel1[0].val1;
+		value->y = accel1[1].val1;
+		value->z = accel1[2].val1;
+		return 1;
+	}
+}
+
+// static void fetch_and_display(void)
+// {
+// 	static unsigned int count;
+// 	struct sensor_value accel[3];
+// 	// struct sensor_value temperature;
+// 	const char *overrun = "";
+// 	int rc = sensor_sample_fetch(lis2dw12);
+
+// 	++count;
+// 	if (rc == -EBADMSG) {
+// 		/* Sample overrun.  Ignore in polled mode. */
+// 		if (IS_ENABLED(CONFIG_LIS2DW12XD_TRIGGER)) {
+// 			overrun = "[OVERRUN] ";
+// 		}
+// 		rc = 0;
+// 	}
+// 	if (rc == 0) {
+// 		rc = sensor_channel_get(lis2dw12,
+// 					SENSOR_CHAN_ACCEL_XYZ,
+// 					accel);
+// 	}
+// 	if (rc < 0) {
+// 		LOG_ERR("ERROR: Update failed: %d\n", rc);
+// 	} else {
+// 		LOG_DBG("#%u @ %u ms: %sx %f , y %f , z %f",
+// 		       count, k_uptime_get_32(), overrun,
+// 		       sensor_value_to_double(&accel[0]),
+// 		       sensor_value_to_double(&accel[1]),
+// 		       sensor_value_to_double(&accel[2]));
+// 	}
+
+// 	// if (IS_ENABLED(CONFIG_LIS2DH_MEASURE_TEMPERATURE)) {
+// 	// 	if (rc == 0) {
+// 	// 		rc = sensor_channel_get(sensor, SENSOR_CHAN_DIE_TEMP, &temperature);
+// 	// 		if (rc < 0) {
+// 	// 			printf("\nERROR: Unable to read temperature:%d\n", rc);
+// 	// 		} else {
+// 	// 			printf(", t %f\n", sensor_value_to_double(&temperature));
+// 	// 		}
+// 	// 	}
+
+// 	// } else {
+// 	// 	printf("\n");
+// 	// }
+// }
 
 #ifdef CONFIG_LIS2DH_TRIGGER
 static void trigger_handler(const struct device *dev,
@@ -125,7 +169,7 @@ void gsensor_thread(void)
 	// printf("Polling at 0.5 Hz\n");
 	for (;;) 
 	{
-		fetch_and_display();
+		// fetch_and_display();
 		k_sleep(K_MSEC(1000));
 	}
 }

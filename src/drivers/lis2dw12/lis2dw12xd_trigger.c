@@ -11,7 +11,8 @@
 #define DT_DRV_COMPAT st_lis2dw12xd
 
 #include <kernel.h>
-#include <drivers/sensor.h>
+// #include <drivers/sensor.h>
+#include "sensor.h"
 #include <drivers/gpio.h>
 #include <logging/log.h>
 

@@ -24,6 +24,7 @@ add_subdirectory(src/drivers)
 
 include_directories(src/app)
 include_directories(src/drivers)
+include_directories(src/app/st_mems1_datalogextended)
 
 # Drivers directories
 # add_subdirectory_ifdef(CONFIG_WATCHDOG_APPLICATION src/drivers/watchdog)

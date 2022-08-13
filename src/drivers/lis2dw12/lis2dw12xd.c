@@ -14,7 +14,8 @@
 #include <sys/__assert.h>
 #include <sys/byteorder.h>
 #include <logging/log.h>
-#include <drivers/sensor.h>
+// #include <drivers/sensor.h>
+#include "sensor.h"
 
 #if DT_ANY_INST_ON_BUS_STATUS_OKAY(spi)
 #include <drivers/spi.h>

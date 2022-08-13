@@ -47,6 +47,12 @@ struct sensor_value {
 	int32_t val2;
 };
 
+struct sensor_axis_val
+{
+	int32_t x;
+	int32_t y;
+	int32_t z;
+};
 /**
  * @brief Sensor channels.
  */
